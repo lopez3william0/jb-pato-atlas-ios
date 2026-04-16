@@ -1,0 +1,35 @@
+workflows:
+  ios-release:
+    name: iOS Release Build
+    environment:
+      xcode: latest
+      cocoapods: default
+
+    scripts:
+      - name: Install dependencies
+        script: |
+          echo "No dependencies"
+
+      - name: Set up code signing
+        script: |
+          echo "Using automatic signing"
+
+      - name: Build iOS app
+        script: |
+          xcodebuild \
+            -project "JB Pato Atlas.xcodeproj" \
+            -scheme "JB Pato Atlas" \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/JBPatoAtlas.xcarchive \
+            archive
+
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive \
+            -archivePath build/JBPatoAtlas.xcarchive \
+            -exportOptionsPlist /Users/builder/exportOptions.plist \
+            -exportPath build/ipa
+
+    artifacts:
+      - build/ipa/*.ipa
