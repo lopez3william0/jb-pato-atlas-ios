@@ -1,0 +1,38 @@
+[
+  {
+    "id": "history",
+    "title": "History",
+    "items": [
+      "Pato has been practiced in Argentina since the early 17th century, and the federation history page cites a 1610 chronicle as one of the earliest references.",
+      "The historical description says the original game used a leather bundle with handles and a duck inside, contested by mounted teams between marked points.",
+      "The in-app build treats this as historical context only; the full modern rulebook is maintained by the Federación Argentina de Pato."
+    ]
+  },
+  {
+    "id": "official-rules",
+    "title": "Official rules and conduct",
+    "items": [
+      "The federation regulations page points to the official sporting regulations, field regulations and the code of faults.",
+      "The disciplinary preamble stresses that the game’s speed and physicality require strict rule compliance, sportsmanship and reduced disputes.",
+      "This app is a guide and tracker, not an official legal source. For exact rules, judges and competition rulings, the federation documents remain the authority."
+    ]
+  },
+  {
+    "id": "competition-format",
+    "title": "Competition notes",
+    "items": [
+      "Many official events are organized by ventaja or tantos bands, such as Novicios, Estímulo, Baja Ventaja, Alta Ventaja and women’s league weekends.",
+      "The 2026 federation calendar often publishes tournament windows and venues before full pairings, so future entries in the app are shown as official events until teams are confirmed.",
+      "Triple Corona coverage in 2025 centered on Copa Argentina, Copa El Recuerdo and the Abierto Argentino."
+    ]
+  },
+  {
+    "id": "how-to-use",
+    "title": "How to use this app",
+    "items": [
+      "Browse official results by competition, team or stage using search in the Results tab.",
+      "Use the Teams tab to follow real clubs and competition combinations mentioned in federation coverage.",
+      "Save teams, results and calendar events locally to build a lightweight personal watchlist without creating an account."
+    ]
+  }
+]

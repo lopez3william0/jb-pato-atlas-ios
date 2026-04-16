@@ -1,0 +1,90 @@
+[
+  {
+    "id": "e_2026_02_21_novicios",
+    "competition": "Nacional Novicios",
+    "dateLabel": "21–22 Feb 2026",
+    "startDate": "2026-02-21",
+    "venue": "Campo Argentino",
+    "notes": "Official 2026 calendar entry. Up to 2 tantos, max players of 1 tanto, one novice required.",
+    "status": "Official calendar",
+    "sourceTitle": "Calendario Deportivo 2026",
+    "sourceURL": "https://pato.org.ar/calendario-de-pato/"
+  },
+  {
+    "id": "e_2026_02_21_femenina",
+    "competition": "Liga Femenina",
+    "dateLabel": "21–22 Feb 2026",
+    "startDate": "2026-02-21",
+    "venue": "Campo Argentino Picadero",
+    "notes": "Federation calendar entry for the women’s league weekend in the Picadero.",
+    "status": "Official calendar",
+    "sourceTitle": "Calendario Deportivo 2026",
+    "sourceURL": "https://pato.org.ar/calendario-de-pato/"
+  },
+  {
+    "id": "e_2026_03_07_estimulo",
+    "competition": "Nacional Estímulo",
+    "dateLabel": "7–8 Mar 2026",
+    "startDate": "2026-03-07",
+    "venue": "Campo Argentino",
+    "notes": "Official 2026 calendar entry. Up to 5 tantos, max players of 2 tantos, one zero or novice required.",
+    "status": "Official calendar",
+    "sourceTitle": "Calendario Deportivo 2026",
+    "sourceURL": "https://pato.org.ar/calendario-de-pato/"
+  },
+  {
+    "id": "e_2026_03_07_femenina",
+    "competition": "Liga Femenina",
+    "dateLabel": "7–8 Mar 2026",
+    "startDate": "2026-03-07",
+    "venue": "Campo Argentino Picadero",
+    "notes": "Second early-season women’s league date published in the 2026 federation calendar.",
+    "status": "Official calendar",
+    "sourceTitle": "Calendario Deportivo 2026",
+    "sourceURL": "https://pato.org.ar/calendario-de-pato/"
+  },
+  {
+    "id": "e_2026_05_23_remonta",
+    "competition": "Remonta y Veterinaria",
+    "dateLabel": "23–25 May 2026",
+    "startDate": "2026-05-23",
+    "venue": "Campo Argentino de Pato",
+    "notes": "Official 2026 calendar entry. Range from 4 to 12 tantos with a maximum of one 4-tanto player.",
+    "status": "Official calendar",
+    "sourceTitle": "Calendario Deportivo 2026",
+    "sourceURL": "https://pato.org.ar/calendario-de-pato/"
+  },
+  {
+    "id": "e_2026_05_24_femenina",
+    "competition": "Liga Femenina",
+    "dateLabel": "24–25 May 2026",
+    "startDate": "2026-05-24",
+    "venue": "Campo Argentino de Pato Picadero",
+    "notes": "Women’s league weekend published alongside Remonta y Veterinaria.",
+    "status": "Official calendar",
+    "sourceTitle": "Calendario Deportivo 2026",
+    "sourceURL": "https://pato.org.ar/calendario-de-pato/"
+  },
+  {
+    "id": "e_2025_11_12_copa_capital",
+    "competition": "Copa Capital Nacional",
+    "dateLabel": "12–16 Nov 2025 coverage",
+    "startDate": "2025-11-12",
+    "venue": "Campo de Pato Gral. Las Heras",
+    "notes": "Official article announced six participating teams: El Parque – Los Gurises, El Fogón, San Patricio LH, El Relincho La Francesa, Gral. Las Heras and Las Heras – La Carreta.",
+    "status": "Official archive",
+    "sourceTitle": "Fin de semana a puro PATO!! Copa Capital, Show en vivo, Exhibición Criollos y mucho más..",
+    "sourceURL": "https://pato.org.ar/fin-de-semana-a-puro-pato-copa-capital-show-en-vivo-exhibicion-criollos-y-mucho-mas/"
+  },
+  {
+    "id": "e_2025_11_14_copa_argentina",
+    "competition": "Copa Argentina",
+    "dateLabel": "14 Nov 2025 announcement",
+    "startDate": "2025-11-14",
+    "venue": "Campo de Pato Gral. Las Heras",
+    "notes": "Official federation article states five teams would contest the Copa Argentina up to 40 tantos as part of the Fiesta Nacional del Pato.",
+    "status": "Official archive",
+    "sourceTitle": "La Copa Argentina se realizará en el marco de la Fiesta Nacional del Pato.",
+    "sourceURL": "https://pato.org.ar/la-copa-argentina-se-realizara-en-el-marco-de-la-fiesta-nacional-del-pato/"
+  }
+]
