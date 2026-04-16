@@ -4,7 +4,7 @@ workflows:
     environment:
       xcode: latest
       ios_signing:
-        distribution_type: development
+        distribution_type: app_store
         bundle_identifier: com.jb.pato.sports.app
 
     scripts:
@@ -20,4 +20,7 @@ workflows:
 
     artifacts:
       - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        submit_to_testflight: true
