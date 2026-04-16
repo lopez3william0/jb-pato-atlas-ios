@@ -3,7 +3,7 @@ workflows:
     name: iOS Release Build
 
     integrations:
-      app_store_connect: codemagic
+      app_store_connect: "Svetlana Prikhodko"
 
     environment:
       xcode: latest
