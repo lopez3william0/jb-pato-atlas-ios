@@ -1,6 +1,10 @@
 workflows:
   ios-release:
     name: iOS Release Build
+
+    integrations:
+      app_store_connect: codemagic
+
     environment:
       xcode: latest
       ios_signing:
