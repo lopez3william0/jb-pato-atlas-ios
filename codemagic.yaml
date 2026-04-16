@@ -3,33 +3,21 @@ workflows:
     name: iOS Release Build
     environment:
       xcode: latest
-      cocoapods: default
+      ios_signing:
+        distribution_type: development
+        bundle_identifier: com.jb.pato.sports.app
 
     scripts:
-      - name: Install dependencies
-        script: |
-          echo "No dependencies"
-
       - name: Set up code signing
         script: |
-          echo "Using automatic signing"
+          xcode-project use-profiles
 
-      - name: Build iOS app
+      - name: Build ipa
         script: |
-          xcodebuild \
-            -project "JB Pato Atlas.xcodeproj" \
-            -scheme "JB Pato Atlas" \
-            -configuration Release \
-            -destination 'generic/platform=iOS' \
-            -archivePath build/JBPatoAtlas.xcarchive \
-            archive
-
-      - name: Export IPA
-        script: |
-          xcodebuild -exportArchive \
-            -archivePath build/JBPatoAtlas.xcarchive \
-            -exportOptionsPlist /Users/builder/exportOptions.plist \
-            -exportPath build/ipa
+          xcode-project build-ipa \
+            --project "JB Pato Atlas.xcodeproj" \
+            --scheme "JB Pato Atlas"
 
     artifacts:
-      - build/ipa/*.ipa
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
