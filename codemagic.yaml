@@ -1,32 +1,170 @@
 workflows:
-  ios-release:
-    name: iOS Release Build
+    swift-ios-workflow:
+        name: Swift iOS Workflow
+        max_build_duration: 60
+        instance_type: mac_mini_m2
 
-    integrations:
-      app_store_connect: "Svetlana Prikhodko"
+        environment:
+            xcode: 16.4
 
-    environment:
-      xcode: latest
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.jb.pato.sports.app
+        scripts:
+            - name: Load IOS/.env
+              script: |
+                  set -euo pipefail
 
-    scripts:
-      - name: Set up code signing
-        script: |
-          xcode-project use-profiles
+                  ENV_FILE="./IOS/.env"
+                  if [ ! -f "$ENV_FILE" ]; then
+                    echo "Missing $ENV_FILE"
+                    exit 1
+                  fi
 
-      - name: Build ipa
-        script: |
-          xcode-project build-ipa \
-            --project "JB Pato Atlas.xcodeproj" \
-            --scheme "JB Pato Atlas"
+                  set -a
+                  source "$ENV_FILE"
+                  set +a
 
-    artifacts:
-      - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
+                  for v in CM_CERTIFICATE_PASSWORD \
+                           APP_STORE_CONNECT_KEY_IDENTIFIER APP_STORE_CONNECT_ISSUER_ID \
+                           MANUAL_BUILD_NUMBER APP_VERSION BUNDLE_ID XCODE_PROJECT XCODE_SCHEME TEAM_ID; do
+                    if [ -n "${!v:-}" ]; then
+                      echo "$v=${!v}" >> "$CM_ENV"
+                    fi
+                  done
 
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
+                  KEY_FILE="$(ls ./IOS/AuthKey_*.p8 2>/dev/null | head -n 1 || true)"
+                  if [ -z "$KEY_FILE" ]; then
+                    echo "No AuthKey_*.p8 found in IOS/"
+                    exit 1
+                  fi
+
+                  echo "APP_STORE_CONNECT_PRIVATE_KEY<<EOF" >> "$CM_ENV"
+                  cat "$KEY_FILE" >> "$CM_ENV"
+                  echo "" >> "$CM_ENV"
+                  echo "EOF" >> "$CM_ENV"
+
+                  echo "Loaded .env OK"
+
+            - name: Set up keychain + install certificate
+              script: |
+                  set -euo pipefail
+                  : "${CM_CERTIFICATE_PASSWORD?}"
+
+                  CERT_PATH="$(ls ./IOS/*.p12 2>/dev/null | head -n 1 || true)"
+                  if [ -z "$CERT_PATH" ]; then
+                    echo "No .p12 found in IOS/"
+                    exit 1
+                  fi
+
+                  keychain initialize
+                  keychain add-certificates \
+                    --certificate "$CERT_PATH" \
+                    --certificate-password "$CM_CERTIFICATE_PASSWORD"
+
+                  echo "Codesign identities:"
+                  security find-identity -p codesigning -v || true
+
+            - name: Install provisioning profile
+              script: |
+                  set -euo pipefail
+
+                  PROFILE_PATH="$(ls ./IOS/*.mobileprovision 2>/dev/null | head -n 1 || true)"
+                  if [ -z "$PROFILE_PATH" ]; then
+                    echo "No .mobileprovision found in IOS/"
+                    exit 1
+                  fi
+
+                  PROFILES_HOME="$HOME/Library/MobileDevice/Provisioning Profiles"
+                  mkdir -p "$PROFILES_HOME"
+                  cp "$PROFILE_PATH" "$PROFILES_HOME/"
+
+                  echo "Installed:"
+                  ls -la "$PROFILES_HOME"
+
+            - name: Apply signing
+              script: |
+                  set -euo pipefail
+                  xcode-project use-profiles --project "$XCODE_PROJECT"
+
+            - name: Set build number
+              script: |
+                  set -euo pipefail
+                  : "${MANUAL_BUILD_NUMBER?}"
+                  : "${APP_VERSION?}"
+
+                  agvtool new-version -all "$MANUAL_BUILD_NUMBER" || true
+                  agvtool new-marketing-version "$APP_VERSION" || true
+                  echo "Version: $APP_VERSION ($MANUAL_BUILD_NUMBER)"
+
+            - name: Generate ExportOptions.plist
+              script: |
+                  set -euo pipefail
+                  : "${BUNDLE_ID?}"
+
+                  PROFILE_PATH="$(ls ./IOS/*.mobileprovision | head -1)"
+                  PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print :Name" /dev/stdin <<< $(security cms -D -i "$PROFILE_PATH"))
+
+                  echo "Bundle ID: $BUNDLE_ID"
+                  echo "Profile: $PROFILE_NAME"
+                  echo "Team ID: $TEAM_ID"
+
+                  cat > /tmp/ExportOptions.plist << PLIST
+                  <?xml version="1.0" encoding="UTF-8"?>
+                  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+                  <plist version="1.0">
+                  <dict>
+                      <key>method</key>
+                      <string>app-store</string>
+                      <key>teamID</key>
+                      <string>$TEAM_ID</string>
+                      <key>uploadSymbols</key>
+                      <false/>
+                      <key>compileBitcode</key>
+                      <false/>
+                      <key>signingStyle</key>
+                      <string>manual</string>
+                      <key>signingCertificate</key>
+                      <string>Apple Distribution</string>
+                      <key>provisioningProfiles</key>
+                      <dict>
+                          <key>$BUNDLE_ID</key>
+                          <string>$PROFILE_NAME</string>
+                      </dict>
+                  </dict>
+                  </plist>
+                  PLIST
+
+            - name: Build IPA
+              script: |
+                  set -euo pipefail
+
+                  ARCHIVE_PATH="/Users/builder/clone/build/ios/xcarchive/${XCODE_SCHEME}.xcarchive"
+                  IPA_DIR="/Users/builder/clone/build/ios/ipa"
+                  mkdir -p "$IPA_DIR"
+
+                  # Archive
+                  xcodebuild \
+                    -project "$XCODE_PROJECT" \
+                    -scheme "$XCODE_SCHEME" \
+                    -configuration Release \
+                    -archivePath "$ARCHIVE_PATH" \
+                    archive \
+                    COMPILER_INDEX_STORE_ENABLE=NO \
+                    "CODE_SIGN_IDENTITY=Apple Distribution" \
+                    CODE_SIGN_STYLE=Manual \
+                    "DEVELOPMENT_TEAM=$TEAM_ID"
+
+                  # Export IPA
+                  xcodebuild \
+                    -exportArchive \
+                    -archivePath "$ARCHIVE_PATH" \
+                    -exportOptionsPlist /tmp/ExportOptions.plist \
+                    -exportPath "$IPA_DIR"
+
+        artifacts:
+            - build/ios/ipa/*.ipa
+
+        publishing:
+            app_store_connect:
+                api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+                key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
+                issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+                submit_to_testflight: false
