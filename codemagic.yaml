@@ -1,0 +1,32 @@
+workflows:
+  ios-release:
+    name: iOS Release Build
+
+    integrations:
+      app_store_connect: "Svetlana Prikhodko"
+
+    environment:
+      xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.jb.pato.sports.app
+
+    scripts:
+      - name: Set up code signing
+        script: |
+          xcode-project use-profiles
+
+      - name: Build ipa
+        script: |
+          xcode-project build-ipa \
+            --project "JB Pato Atlas.xcodeproj" \
+            --scheme "JB Pato Atlas"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
